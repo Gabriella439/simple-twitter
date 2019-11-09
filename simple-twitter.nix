@@ -1,7 +1,7 @@
 let
   region = "us-west-1";
 
-  accessKeyId = "personal";
+  accessKeyId = "default";
 
 in
   { machine = { config, pkgs, resources, ... }: {

@@ -1,7 +1,7 @@
 # `simple-twitter`
 
-This is a bare bones "Twitter clone" implemented in a **single file** that you
-can deploy to EC2
+This is a bare bones "Twitter clone" implemented in
+[a **single file**](./simple-twitter.nix) that you can deploy to EC2
 
 This uses:
 
@@ -71,3 +71,11 @@ $ nixops delete --deployment simple-twitter
 ```
 
 Have fun! 🙂
+
+## Split files
+
+You can also view the files split out by language:
+
+* [./split.nix](./split.nix) - Only the Nix code
+* [./Main.hs](./Main.hs) - Only the Haskell code
+* [./initialScript.sql](./initialScript.sql) - Only the SQL code

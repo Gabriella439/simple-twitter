@@ -1,5 +1,7 @@
 # `simple-twitter`
 
+This is a project which has corresponding [talk slides](https://github.com/Gabriel439/slides/blob/master/simple-twitter/slides.md)
+
 This is a bare bones "Twitter clone" implemented in
 [a **single file**](./simple-twitter.nix) that you can deploy to EC2
 

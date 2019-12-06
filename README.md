@@ -82,6 +82,6 @@ Have fun! 🙂
 
 You can also view the files split out by language:
 
-* [./split.nix](./split.nix) - Only the Nix code
-* [./Main.hs](./Main.hs) - Only the Haskell code
-* [./initialScript.sql](./initialScript.sql) - Only the SQL code
+* [`./split.nix`](./split.nix) - Only the Nix code
+* [`./Main.hs`](./Main.hs) - Only the Haskell code
+* [`./initialScript.sql`](./initialScript.sql) - Only the SQL code

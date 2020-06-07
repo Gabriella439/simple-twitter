@@ -451,21 +451,22 @@ main = do
     resources = {
       ec2KeyPairs.my-key-pair = { inherit region accessKeyId; };
 
-      ec2SecurityGroups."http" = {
-        inherit accessKeyId region;
+      ec2SecurityGroups = {
+        "http" = {
+          inherit accessKeyId region;
 
-        rules = [
-          { fromPort = 80; toPort = 80; sourceIp = "0.0.0.0/0"; }
-        ];
-      };
+          rules = [
+            { fromPort = 80; toPort = 80; sourceIp = "0.0.0.0/0"; }
+          ];
+        };
 
+        "ssh" = {
+          inherit accessKeyId region;
 
-      ec2SecurityGroups."ssh" = {
-        inherit accessKeyId region;
-
-        rules = [
-          { fromPort = 22; toPort = 22; sourceIp = "0.0.0.0/0"; }
-        ];
+          rules = [
+            { fromPort = 22; toPort = 22; sourceIp = "0.0.0.0/0"; }
+          ];
+        };
       };
     };
   }

@@ -14,6 +14,11 @@ in
           instanceType = "t2.nano";
 
           keyPair = resources.ec2KeyPairs.my-key-pair;
+
+          securityGroups = [
+            resources.ec2SecurityGroups."http"
+            resources.ec2SecurityGroups."ssh"
+          ];
         };
       };
 
@@ -451,6 +456,15 @@ main = do
 
         rules = [
           { fromPort = 80; toPort = 80; sourceIp = "0.0.0.0/0"; }
+        ];
+      };
+
+
+      ec2SecurityGroups."ssh" = {
+        inherit accessKeyId region;
+
+        rules = [
+          { fromPort = 22; toPort = 22; sourceIp = "0.0.0.0/0"; }
         ];
       };
     };

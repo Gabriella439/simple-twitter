@@ -48,15 +48,9 @@ in
             id integer GENERATED ALWAYS AS IDENTITY,
             contents text NOT NULL,
             time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id)
-          );
-
-          CREATE TABLE user_tweet (
-            "user" text NOT NULL,
-            tweet integer NOT NULL,
-            PRIMARY KEY ("user", tweet),
-            FOREIGN KEY ("user") REFERENCES "user" (name) ON DELETE CASCADE,
-            FOREIGN KEY (tweet) REFERENCES tweet (id) ON DELETE CASCADE
+            author text NOT NULL,
+            PRIMARY KEY (id),
+            FOREIGN KEY ("author") REFERENCES "user" (name) ON DELETE CASCADE
           );
 
           CREATE TABLE follows (
@@ -299,8 +293,7 @@ main = do
                 tweets <- query_ [sql|
                     SELECT "user".name, tweet.contents
                     FROM           "user"
-                        INNER JOIN user_tweet ON "user".name = user_tweet."user"
-                        INNER JOIN tweet      ON user_tweet.tweet = tweet.id
+                        INNER JOIN tweet ON "user".name = user_tweet.author
                     ORDER BY tweet.time DESC
                 |]
 
@@ -344,8 +337,7 @@ main = do
                     history <- query user [sql|
                         SELECT "user".name, tweet.contents
                         FROM           "user"
-                            INNER JOIN user_tweet ON "user".name = user_tweet."user"
-                            INNER JOIN tweet      ON user_tweet.tweet = tweet.id
+                            INNER JOIN tweet ON "user".name = tweet.author
                         WHERE "user".name = ?
                         ORDER BY tweet.time DESC
                     |]
@@ -353,9 +345,8 @@ main = do
                     timeline <- query user [sql|
                         SELECT follows.followed, tweet.contents
                         FROM           "user"
-                            INNER JOIN follows    ON "user".name = follows.follower
-                            INNER JOIN user_tweet ON follows.followed = user_tweet."user"
-                            INNER JOIN tweet      ON user_tweet.tweet = tweet.id
+                            INNER JOIN follows ON "user".name = follows.follower
+                            INNER JOIN tweet   ON follows.followed = tweet.author
                         WHERE "user".name = ?
                         ORDER BY tweet.time DESC
                     |]
@@ -436,14 +427,12 @@ main = do
             '';
 
             simple-twitter = pkgs.runCommand "simple-twitter" {} ''
-              ${pkgs.coreutils}/bin/mkdir --parents $out/bin
-
-              ${ghc}/bin/ghc -O -Wall -Werror ${code} -o $out/bin/simple-twitter
+              ${ghc}/bin/ghc -O -Wall -Werror ${code} -o $out
             '';
 
           in
             ''
-            ${simple-twitter}/bin/simple-twitter --connectPort ${toString config.services.postgresql.port}
+            ${simple-twitter} --connectPort ${toString config.services.postgresql.port}
             '';
       };
     };

@@ -47,7 +47,7 @@ in
           CREATE TABLE tweet (
             id integer GENERATED ALWAYS AS IDENTITY,
             contents text NOT NULL,
-            time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
           );
 

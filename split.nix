@@ -68,14 +68,12 @@ in
             code = ./Main.hs;
 
             simple-twitter = pkgs.runCommand "simple-twitter" {} ''
-              ${pkgs.coreutils}/bin/mkdir --parents $out/bin
-
-              ${ghc}/bin/ghc -O -Wall -Werror ${code} -o $out/bin/simple-twitter
+              ${ghc}/bin/ghc -O -Wall -Werror ${code} -o $out
             '';
 
           in
             ''
-            ${simple-twitter}/bin/simple-twitter --connectPort ${toString config.services.postgresql.port}
+            ${simple-twitter} --connectPort ${toString config.services.postgresql.port}
             '';
       };
     };

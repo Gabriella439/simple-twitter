@@ -291,9 +291,8 @@ main = do
         let index :: Handler Markup
             index = do
                 tweets <- query_ [sql|
-                    SELECT "user".name, tweet.contents
-                    FROM           "user"
-                        INNER JOIN tweet ON "user".name = user_tweet.author
+                    SELECT tweet.author, tweet.contents
+                    FROM tweet
                     ORDER BY tweet.time DESC
                 |]
 
@@ -329,25 +328,22 @@ main = do
                 failWith message do
                     followeds <- query user [sql|
                         SELECT follows.followed
-                        FROM           "user"
-                            INNER JOIN follows ON "user".name = follows.follower
-                        WHERE "user".name = ?
+                        FROM follows
+                        WHERE follows.follower = ?
                     |]
 
                     history <- query user [sql|
-                        SELECT "user".name, tweet.contents
-                        FROM           "user"
-                            INNER JOIN tweet ON "user".name = tweet.author
-                        WHERE "user".name = ?
+                        SELECT tweet.author, tweet.contents
+                        FROM tweet
+                        WHERE tweet.author = ?
                         ORDER BY tweet.time DESC
                     |]
 
                     timeline <- query user [sql|
                         SELECT follows.followed, tweet.contents
-                        FROM           "user"
-                            INNER JOIN follows ON "user".name = follows.follower
-                            INNER JOIN tweet   ON follows.followed = tweet.author
-                        WHERE "user".name = ?
+                        FROM           follows
+                            INNER JOIN tweet ON follows.followed = tweet.author
+                        WHERE follows.follower = ?
                         ORDER BY tweet.time DESC
                     |]
 
@@ -395,10 +391,6 @@ main = do
                 id <- case rows of
                     [ (id :: Only Integer) ] -> return id
                     _                        -> Catch.throwM Server.err500
-
-                execute (Only name :. id) [sql|
-                    INSERT INTO user_tweet ("user", tweet) VALUES (?, ?)
-                |]
 
                 getUser (User {..})
 

@@ -384,8 +384,8 @@ main = do
 
         let createTweet :: Tweet -> Handler Markup
             createTweet (Tweet {..}) = do
-                rows <- query (Only contents) [sql|
-                    INSERT INTO tweet (contents) VALUES (?) RETURNING (id)
+                rows <- query (name, contents) [sql|
+                    INSERT INTO tweet (author, contents) VALUES (?, ?) RETURNING (id)
                 |]
 
                 id <- case rows of
